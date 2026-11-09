@@ -1,0 +1,44 @@
+{
+    "dataset_name": "Harmonized Hybrid Fake News Dataset",
+    "version": "v1.0.0",
+    "total_records": 684,
+    "deduplicated_count": 0,
+    "class_distribution": {
+        "REAL": 343,
+        "FAKE": 341
+    },
+    "source_distribution": {
+        "self_generated": 660,
+        "kaggle": 24
+    },
+    "category_distribution": {
+        "Business": 104,
+        "Technology": 100,
+        "Health": 88,
+        "Science": 83,
+        "Politics": 83,
+        "Education": 81,
+        "Sports": 60,
+        "Infrastructure": 44,
+        "Environment": 11,
+        "Finance": 11,
+        "Agriculture": 6,
+        "World": 5,
+        "Entertainment": 3,
+        "Government": 2,
+        "Transport": 2,
+        "Development": 1
+    },
+    "features": [
+        "news_id",
+        "title",
+        "article",
+        "category",
+        "source",
+        "label",
+        "label_name",
+        "dataset_source",
+        "content_hash"
+    ],
+    "status": "VALIDATED"
+}

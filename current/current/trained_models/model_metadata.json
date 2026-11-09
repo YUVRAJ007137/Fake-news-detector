@@ -1,0 +1,95 @@
+{
+    "model_version": "v2.0.0",
+    "timestamp": "2026-11-09T18:22:11.426617",
+    "algorithm": "Calibrated Linear Support Vector Machine",
+    "training_samples": 547,
+    "test_samples": 137,
+    "feature_count": 5000,
+    "champion_metrics": {
+        "model_name": "Calibrated Linear Support Vector Machine",
+        "accuracy": 0.9854,
+        "precision": 0.9718,
+        "recall": 1.0,
+        "f1_score": 0.9857,
+        "roc_auc": 1.0,
+        "confusion_matrix": [
+            [
+                66,
+                2
+            ],
+            [
+                0,
+                69
+            ]
+        ]
+    },
+    "comparison_metrics": {
+        "logistic_regression": {
+            "model_name": "Logistic Regression",
+            "accuracy": 0.9854,
+            "precision": 0.9718,
+            "recall": 1.0,
+            "f1_score": 0.9857,
+            "roc_auc": 1.0,
+            "confusion_matrix": [
+                [
+                    66,
+                    2
+                ],
+                [
+                    0,
+                    69
+                ]
+            ]
+        },
+        "calibrated_linear_svc": {
+            "model_name": "Calibrated Linear Support Vector Machine",
+            "accuracy": 0.9854,
+            "precision": 0.9718,
+            "recall": 1.0,
+            "f1_score": 0.9857,
+            "roc_auc": 1.0,
+            "confusion_matrix": [
+                [
+                    66,
+                    2
+                ],
+                [
+                    0,
+                    69
+                ]
+            ]
+        }
+    },
+    "classification_report": {
+        "FAKE": {
+            "precision": 1.0,
+            "recall": 0.9705882352941176,
+            "f1-score": 0.9850746268656716,
+            "support": 68.0
+        },
+        "REAL": {
+            "precision": 0.971830985915493,
+            "recall": 1.0,
+            "f1-score": 0.9857142857142858,
+            "support": 69.0
+        },
+        "accuracy": 0.9854014598540146,
+        "macro avg": {
+            "precision": 0.9859154929577465,
+            "recall": 0.9852941176470589,
+            "f1-score": 0.9853944562899787,
+            "support": 137.0
+        },
+        "weighted avg": {
+            "precision": 0.9858126863370001,
+            "recall": 0.9854014598540146,
+            "f1-score": 0.9853967908113239,
+            "support": 137.0
+        }
+    },
+    "artifacts": {
+        "model_path": "trained_models\\fake_news_model.pkl",
+        "vectorizer_path": "trained_models\\tfidf_vectorizer.pkl"
+    }
+}
