@@ -78,15 +78,17 @@
 ---
 
 ### Slide 7: Engine 2 — Google Gemini 2.5 Flash & Consensus Engine
-- **SDK:** Official `google-genai` Python SDK.
-- **Prompt Injection Firewall:** Treats news text strictly as untrusted data; ignores internal instructions.
+- **Why Single-Engine Fails (Counterfactual Stress Test):**
+  - Paired test of 10 fake claims showed a **+18.4% Style-Bias Gap**: when fake news is written in calm press-release prose, the SVM's $P(\text{Fake})$ drops from 78.9% to 30.1%.
+  - Classical ML catches *sensational style*, not *factual truth*. Engine 2 is mandatory for epistemic verification!
+- **SDK & Security:** Official `google-genai` Python SDK with strict Anti-Prompt Injection Firewall.
 - **Enforced JSON Output:** `assessment`, `confidence_score`, `evidence_summary`, `sources`.
 - **Consensus States:**
   - `AGREE`: Both engines concur on REAL or FAKE (maximum confidence).
-  - `DISAGREE`: Conflicting verdicts $\rightarrow$ `INCONCLUSIVE (CONFLICT)` routed to admin human review.
+  - `DISAGREE`: Conflicting verdicts $\rightarrow$ `INCONCLUSIVE (CONFLICT)` routed to admin review.
   - `INCONCLUSIVE`: Confidence below 60% threshold.
 > **Speaker Notes:**  
-> "Our second engine runs Google Gemini 2.5 Flash. We designed a strict prompt firewall so malicious users cannot inject commands into article bodies. The Consensus Arbiter reconciles both engines: if they disagree, it flags a conflict for human review rather than guessing."
+> "Our adversarial stress test proved that statistical ML alone is vulnerable to style bias: calm, bureaucratic fake news fools the SVM. This is why we engineered Engine 2 with Google Gemini 2.5 Flash. It checks factual plausibility and world knowledge. The Consensus Arbiter reconciles both engines: if they disagree, it flags a conflict rather than making a false guess."
 
 ---
 

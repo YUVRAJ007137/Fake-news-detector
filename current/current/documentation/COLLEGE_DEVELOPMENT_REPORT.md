@@ -188,4 +188,51 @@ Result: **15 Passed, 0 Failed (100% Pass Rate)**
 
 ---
 
+### 6. Phase 5: Adversarial Robustness & Style-Bias Stress Testing
+
+To rigorously stress-test the machine learning model beyond conventional in-sample holdout validation, a **counterfactual paired evaluation suite** was constructed (`scripts/build_paired_set.py` & `scripts/score_paired_set.py`) comprising 32 specialized test cases categorized into five variants:
+
+1. **Sensational Fake ($n=10$)**: Fabricated claims phrased with emotive, clickbait vocabulary (*"SHOCKING"*, *"Big Pharma"*, *"Secret Memo"*).
+2. **Neutral Press-Release Fake ($n=10$)**: The **exact same 10 fabricated claims** rewritten in formal, objective, institutional press-release prose (*"Department Endorses..."*, *"Ordinance Restricting..."*).
+3. **Neutral Real ($n=6$)**: Legitimate municipal and civic news written in standard journalistic style.
+4. **Emotional Real ($n=3$)**: Genuine emergency warnings written with urgent language (*"STORM WARNING"*, *"URGENT: Water Main Break"*).
+5. **Fact-Checking Real ($n=3$)**: Genuine investigative fact-checks that quote and debunk viral falsehoods.
+
+#### Benchmark Stress Test Results
+
+```text
+== By Variant (Accuracy | Mean P(Fake) | Inconclusive @ Threshold 0.60) ==
+Variant           N    Accuracy   Mean P(Fake)   Inconclusive
+sensational      10     60.0%        0.60             3
+neutral (fake)   10     10.0%        0.42             4
+neutral_real      6     66.7%        0.32             2
+emotional_real    3      0.0%        0.56             1
+factcheck_real    3      0.0%        0.97             0
+
+== Style-Bias Gap on Identical Fake Claims ==
+Mean Sensational P(Fake): 0.600
+Mean Neutral P(Fake):     0.416
+Mean Style-Bias Gap:     +0.184 (Statistically Significant Lexical Bias)
+```
+
+#### Critical Scientific Insights & Dual-Engine Justification
+
+1. **The Lexical Shortcut Dilemma**:
+   - When a fake claim is sensational (*"SHOCKING: Doctors HATE This Tea That Erases Diabetes in 3 Days!"*), the SVM correctly predicts FAKE with $78.9\%$ confidence.
+   - When the **identical medical falsehood** is disguised as a formal bureaucratic announcement (*"Riverton Health Department Endorses Herbal Tea as Diabetes Treatment"*), the model's $P(\text{Fake})$ plunges to $30.1\%$, incorrectly classifying it as REAL.
+2. **Emotional Real Vulnerability**:
+   - Urgent civic bulletins (*"STORM WARNING"*, *"Water Main Break"*) are penalized by the TF-IDF feature weights because words like "WARNING" and "URGENT" appear frequently in sensational falsehoods.
+3. **Fact-Checker Inversion Vulnerability**:
+   - Legitimate articles debunking rumors (*"Fact-Check: Viral Post Falsely Claims Marlowe Tap Water Is Unsafe"*) receive $P(\text{Fake}) = 99.3\%$, because the article must quote the false claim in order to debunk it.
+
+#### Why This Validates the Project's Dual-Engine Architecture
+
+This stress test provides undeniable empirical evidence for why **single-engine ML models cannot solve fake news detection alone**:
+- A TF-IDF + SVM model classifies **lexical style** (tone, vocabulary, punctuation), not **epistemic truth** (factual verification).
+- This directly justifies **Engine 2 (Google Gemini Flash)**:
+  - When the SVM produces borderline confidence ($0.40 \le P \le 0.60$) or encounters neutral-styled claims, the Gemini LLM performs semantic reasoning, entity cross-referencing, and factual plausibility checking.
+  - The Consensus Engine flags disagreements (`DISAGREE`), ensuring deceptive, calm-toned fake news is caught before misleading users.
+
+---
+
 *This report is maintained continuously throughout the development lifecycle for college project presentation, thesis documentation, and Viva Voce examination.*

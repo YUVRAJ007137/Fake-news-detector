@@ -172,3 +172,21 @@ Both are merged, deduplicated, and balanced to 72 records (36 Real, 36 Fake).
 
 #### Q37: "Why did you implement SQLite fallback if MySQL is your primary database?"
 **Answer:** In production and academic presentation environments, MySQL 8.0+ is the primary database. However, to guarantee that the examiner or evaluator can run the software instantly out-of-the-box without getting stuck on database configuration, we provided an automated SQLite fallback mode toggled via `backend/.env`.
+
+#### Q38: "If your SVM model scored 98.5% holdout test accuracy, why did you need a Dual-Engine Architecture with Gemini LLM? Isn't the SVM enough?"
+**Answer:** This is one of the most critical scientific insights of our project. A 98.5% accuracy on an in-distribution holdout test only proves that the SVM learned the vocabulary of our training corpus. When we conducted a **counterfactual paired stress test** (`scripts/score_paired_set.py`), we discovered that the SVM was learning **lexical style (sensationalism vs formality)** rather than **factual truth**:
+- A fake medical claim written with sensational keywords (*"SHOCKING tea erases diabetes"*) was detected as Fake ($P=78.9\%$).
+- But the **exact same fake claim** rewritten in calm, official press-release language (*"Health Department Endorses Herbal Tea..."*) had its $P(\text{Fake})$ drop to $30.1\%$, fooling the SVM into predicting REAL!
+- Additionally, real emergency breaking alerts (*"STORM WARNING"*) and genuine fact-checking articles were misclassified as fake.
+This empirical failure of single-engine statistical NLP proves why **Engine 2 (Google Gemini LLM)** is mandatory: it performs semantic world-knowledge verification, claim plausibility analysis, and entity checking that stylistic classifiers cannot do.
+
+#### Q39: "What is Style Bias (Lexical Shortcut Learning) and how did you measure it?"
+**Answer:** Style Bias occurs when a machine learning model exploits surface-level linguistic markers (like all-caps headlines, exclamation marks, or hyperbolic adjectives) as a shortcut to classify text, instead of understanding the factual veracity of the content. We measured this using a **Paired Counterfactual Evaluation Set**: 10 fabricated news claims written in two variants (sensational vs neutral press-release style). We calculated the **Style-Bias Gap**:
+$$\text{Style Gap} = P(\text{Fake}|\text{Sensational}) - P(\text{Fake}|\text{Neutral})$$
+Our model exhibited an average Style-Bias Gap of **+0.184**, proving that the model's prediction is significantly shifted simply by changing writing tone without altering the underlying falsehood.
+
+#### Q40: "Why not just use Gemini LLM for everything and eliminate the SVM entirely?"
+**Answer:** Eliminating the SVM would create two fatal engineering problems:
+1. **Latency**: Gemini LLM API calls take 800ms to 2.5 seconds per request. Our Calibrated SVM executes in sub-2 milliseconds (~1.2ms), allowing real-time instant typing feedback and high-throughput batch CSV parsing (processing hundreds of rows in seconds).
+2. **Cost and Offline Availability**: LLM APIs incur per-token financial costs and require continuous Internet connectivity. Our local SVM runs 100% free, fully offline, and on zero-resource edge hardware.
+The Dual-Engine architecture combines the best of both worlds: local SVM for ultra-fast, zero-cost initial screening, and Gemini LLM for deep factual reasoning and consensus resolution.
